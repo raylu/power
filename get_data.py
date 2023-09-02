@@ -17,11 +17,16 @@ DATA_DIR = CURRENT_DIR / 'interval_data'
 
 async def main() -> None:
 	DATA_DIR.mkdir(exist_ok=True)
-	start = datetime.date(2020, 10, 1)
-	DATA_DIR.iterdir() # TODO
+	try:
+		last_file = sorted(DATA_DIR.iterdir())[-1]
+		# redownload the last month rather than advancing a month because it's usually incomplete
+		start = datetime.datetime.strptime(last_file.name.removesuffix('.msgpack'), '%Y-%m').date()
+	except IndexError:
+		start = datetime.date(2020, 10, 1)
 
 	username = 'rayllu'
 	password = (CURRENT_DIR / 'password').read_text().rstrip()
+	today = datetime.date.today()
 
 	async with aiohttp.ClientSession() as session:
 		client = opower.Opower(session, 'pge', username, password)
@@ -32,7 +37,12 @@ async def main() -> None:
 		(customer,) = await client._async_get_customers()
 		customer_uuid: str = customer['uuid']
 
-		await download(session, client, customer_uuid, datetime.date(2021, 1, 1))
+		tasks = []
+		while start < today:
+			print('will download', start.strftime('%Y-%m'))
+			tasks.append(download(session, client, customer_uuid, start))
+			start = (start + datetime.timedelta(days=31)).replace(day=1)
+		await asyncio.gather(*tasks)
 
 async def download(session: aiohttp.ClientSession, client: opower.Opower, customer_uuid: str,
 		start: datetime.date) -> None:
