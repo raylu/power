@@ -12,6 +12,9 @@ extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
 rules:
+  comma-dangle:
+    - error
+    - always-multiline
   linebreak-style:
     - error
     - unix
@@ -21,6 +24,8 @@ rules:
   quotes:
     - error
     - single
+  quote-props:
+    - error
   semi:
     - error
     - always

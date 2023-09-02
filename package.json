@@ -12,7 +12,11 @@
 		"typescript": "^5.2.2"
 	},
 	"scripts": {
-		"esbuild": "esbuild ts/* --bundle --format=esm --outdir=js --sourcemap",
+		"build": "esbuild ts/* --bundle --format=esm --outdir=js --sourcemap",
+		"serve": "esbuild ts/* --bundle --format=esm --outdir=js --sourcemap --serve --servedir=.",
 		"tsc": "tsc --noEmit"
+	},
+	"dependencies": {
+		"c3": "^0.7.20"
 	}
 }
