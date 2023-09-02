@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"outDir": "./static",
+		"target": "esnext",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"module": "nodenext",
+		"experimentalDecorators": true,
+		"moduleResolution": "node",
+		"declaration": true,
+		"declarationMap": true,
+		"incremental": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"tsBuildInfoFile": "ts/.tsbuildinfo"
+	},
+	"include": ["./ts/**/*"]
+}

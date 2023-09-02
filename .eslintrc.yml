@@ -1,0 +1,31 @@
+env:
+  browser: true
+  es2022: true
+ignorePatterns:
+  - js/
+overrides:
+  - files: ["*.mts"]
+    parserOptions:
+      sourceType: module
+plugins: ['@typescript-eslint']
+extends:
+  - eslint:recommended
+  - plugin:@typescript-eslint/recommended
+rules:
+  linebreak-style:
+    - error
+    - unix
+  prefer-const:
+    - error
+    - destructuring: all
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  '@typescript-eslint/no-unused-vars':
+    - error
+    - args: none
+  '@typescript-eslint/no-explicit-any':
+    - off
