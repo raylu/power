@@ -2,11 +2,8 @@
 
 import asyncio
 import calendar
-import csv
 import datetime
-import io
 import pathlib
-import zipfile
 
 import aiohttp
 import opower
@@ -34,33 +31,26 @@ async def main() -> None:
 		# re-login to make sure code handles already logged in sessions
 		await client.async_login()
 
-		(customer,) = await client._async_get_customers()
-		customer_uuid: str = customer['uuid']
+		(account,) = [a for a in await client.async_get_accounts() if a.meter_type == opower.MeterType.ELEC]
 
 		tasks = []
 		while start < today:
 			print('will download', start.strftime('%Y-%m'))
-			tasks.append(download(session, client, customer_uuid, start))
+			tasks.append(download(session, client, account, start))
 			start = (start + datetime.timedelta(days=31)).replace(day=1)
 		await asyncio.gather(*tasks)
 
-async def download(session: aiohttp.ClientSession, client: opower.Opower, customer_uuid: str,
+async def download(session: aiohttp.ClientSession, client: opower.Opower, account: opower.Account,
 		start: datetime.date) -> None:
 	end = start.replace(day=calendar.monthrange(start.year, start.month)[1])
-	url = f'https://pge.opower.com/ei/edge/apis/DataBrowser-v1/cws/utilities/pge/customers/{customer_uuid}/usage_export/download?format=csv&startDate={start}&endDate={end}'
-	async with session.get(url, headers=client._get_headers(), raise_for_status=True) as resp:
-		zip = io.BytesIO(await resp.read())
 
-	with zipfile.ZipFile(zip, 'r') as f:
-		(filename,) = (name for name in f.namelist() if name.startswith('pge_electric_interval_data_'))
-		contents = f.read(filename)
-
-	csv_contents = contents.split(b'\n', 5)[5]
-	csv_reader = csv.DictReader(line.decode() for line in csv_contents.split(b'\n'))
-	readings = [float(row['USAGE']) for row in csv_reader]
+	reads = await client.async_get_cost_reads(account, opower.AggregateType.HOUR,
+			start_date=datetime.datetime(start.year, start.month, start.day),
+			end_date=datetime.datetime(end.year, end.month, end.day))
+	data = [{'start': r.start_time, 'kWh': r.consumption, '$': r.provided_cost} for r in reads]
 
 	out_path = (DATA_DIR / f'{start.strftime("%Y-%m")}.msgpack')
 	print('writing', out_path)
-	out_path.write_bytes(ormsgpack.packb(readings))
+	out_path.write_bytes(ormsgpack.packb(data))
 
 asyncio.run(main())

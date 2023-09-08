@@ -1,7 +1,13 @@
 import * as c3 from 'c3';
 import {unpack} from 'msgpackr/unpack';
 
-async function fetchIntervalData(month: string): Promise<number[]> {
+interface HourData {
+	start: Date,
+	kWh: number,
+	$: number,
+}
+
+async function fetchData(month: string): Promise<HourData[]> {
 	const url = `interval_data/${month}.msgpack`;
 	const resp = await fetch(url);
 	if (!resp.ok)
@@ -13,7 +19,7 @@ c3.generate({
 	'bindto': '#chart',
 	'data': {
 		'columns': [
-			['data1', ...await fetchIntervalData('2021-01')],
+			['data1', ...(await fetchData('2023-08')).map(hour => hour.kWh)],
 		],
 	},
 });
