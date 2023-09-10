@@ -15,7 +15,7 @@ async function fetchData(month: string): Promise<HourData[]> {
 	return unpack(new Uint8Array(await resp.arrayBuffer()));
 }
 
-async function displayChart() {
+async function generateChart() {
 	c3.generate({
 		'bindto': '#chart',
 		'data': {
@@ -26,4 +26,4 @@ async function displayChart() {
 	});
 }
 
-export default displayChart;
+export default generateChart;

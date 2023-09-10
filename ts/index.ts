@@ -1,3 +1,4 @@
-import displayChart from './dataDisplay';
+import { displayChart, displayHeader } from './page-load';
 
+displayHeader();
 displayChart();
