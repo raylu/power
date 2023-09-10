@@ -17,7 +17,7 @@
 	"scripts": {
 		"build": "esbuild ts/* --bundle --format=esm --outdir=js --sourcemap",
 		"serve": "esbuild ts/* --bundle --format=esm --outdir=js --sourcemap --serve --servedir=.",
-		"tsc": "tsc --noEmit"
+		"lint": "tsc --noEmit && eslint ."
 	},
 	"dependencies": {
 		"c3": "^0.7.20",
