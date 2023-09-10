@@ -1,0 +1,24 @@
+* {
+	box-sizing: border-box;
+}
+
+#content {
+    background-color: #def;
+    display: flex;
+    flex-direction: column;
+    flex-direction: space-between;
+}
+
+#header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 2;
+    padding: 20px;
+}
+
+#welcome-header {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
