@@ -1,4 +1,4 @@
-import { displayChart, displayHeader } from './page-load';
+import {displayChart, displayHeader} from './page-load';
 
 displayHeader();
 displayChart();

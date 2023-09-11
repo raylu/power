@@ -2,13 +2,7 @@ import generateChart from './data-display';
 
 const displayHeader = () => {
     const content = document.querySelector('#content');
-    const header = document.createElement('div');
-    header.setAttribute('id', 'header-container');
-    const welcomeHeader = document.createElement('div');
-    welcomeHeader.id = 'welcome-header';
-    welcomeHeader.innerHTML = '<br>Power Data App<br>Welcome, here\'s your data!<br>';
-    header.append(welcomeHeader);
-    content.append(header);
+    content.innerHTML = '<header><h1>Power Data App</h1></header>';
 };
 
 const displayChart = () => {
@@ -22,5 +16,5 @@ const displayChart = () => {
 
 export {
     displayHeader,
-    displayChart
+    displayChart,
 };
