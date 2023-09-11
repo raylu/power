@@ -18,7 +18,7 @@ input,select{vertical-align:middle}
 
 /* actual styles */
 #content {
-    background-color: aliceblue;
+    background-color: #def;
     display: flex;
     flex-direction: column;
     flex-direction: space-between;
