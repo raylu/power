@@ -16,12 +16,25 @@ async function fetchData(month: string): Promise<HourData[]> {
 }
 
 async function generateChart() {
+	const testData = await fetchData('2023-08');
+
 	c3.generate({
 		'bindto': '#chart',
 		'data': {
+			'x': 'date',
+			'xFormat': '%Y-%m-%dT%H:%M:%S%Z',
 			'columns': [
-				['data1', ...(await fetchData('2023-08')).map(hour => hour.kWh)],
+				['date', ...testData.map(hour => hour.start)],
+				['data1', ...testData.map(hour => hour.kWh)],
 			],
+		},
+		'axis': {
+			'x': {
+				'type': 'timeseries',
+				'tick': {
+					'format': '%Y-%m-%d',
+				},
+			},
 		},
 	});
 }
