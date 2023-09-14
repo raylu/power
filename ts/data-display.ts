@@ -19,13 +19,14 @@ async function generateChart() {
 	const testData = await fetchData('2023-08');
 
 	c3.generate({
-		'bindto': '#chart',
+		'bindto': '#power-chart',
 		'data': {
 			'x': 'date',
 			'xFormat': '%Y-%m-%dT%H:%M:%S%Z',
 			'columns': [
 				['date', ...testData.map(hour => hour.start)],
-				['data1', ...testData.map(hour => hour.kWh)],
+				['Power Usage (kWh)', ...testData.map(hour => hour.kWh)],
+				['Cost ($)', ...testData.map(hour => hour.$)],
 			],
 		},
 		'axis': {

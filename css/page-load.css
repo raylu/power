@@ -14,8 +14,23 @@ header {
     flex-direction: column;
     align-items: center;
     line-height: 2;
-    padding: 20px;
     text-align: center;
     font-weight: bold;
     font-size: medium;
+    border-bottom: 2px solid black;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 2;
+    text-align: center;
+    font-weight: bold;
+    font-size: medium;
+}
+
+.filter-form {
+    display: flex;
+    gap: 20px;
 }
