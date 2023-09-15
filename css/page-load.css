@@ -2,11 +2,16 @@
 	box-sizing: border-box;
 }
 
-#content {
+body {
+    height: 100%;
     background-color: #def;
+}
+
+#content {
     display: flex;
     flex-direction: column;
     flex-direction: space-between;
+    height: 100%;
 }
 
 header {
@@ -28,7 +33,10 @@ header {
     text-align: center;
     font-weight: bold;
     font-size: medium;
-    margin: 0 10px;
+}
+
+.chart {
+    flex: 1 1 auto;
 }
 
 .filter-form {

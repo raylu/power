@@ -73,8 +73,9 @@ async function generateChart(startDate?: string, endDate?: string) {
 			'x': {
 				'type': 'timeseries',
 				'tick': {
-					'format': '%Y-%m-%d',
-					'count': 6,
+					'outer': false,
+					'format': '%Y-%m-%d  %H:%M',
+					'rotate': -45,
 				},
 			},
 			'y': {

@@ -28,6 +28,7 @@ const displayChart = () => {
     chartHeader.innerHTML = '<h3>Power Usage (kWh) and Cost Over Time</h3>';
     const chart = document.createElement('div');
     chart.setAttribute('id', 'power-chart');
+    chart.className = 'chart';
 
     chartContainer.append(chartHeader, displayFilter('power-chart', 'date'), chart);
     content.append(chartContainer);
