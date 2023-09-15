@@ -20,12 +20,10 @@ async function generateChart(startDate?: string, endDate?: string) {
 	const testData = [];
 
 	if (startDate && endDate) {
-		const parsedStartDate = new Date(startDate);
-		const parsedEndDate = new Date(endDate);
 		intervalData.forEach((hour) => {
-			const parsedDataDate = new Date(hour.start);
+			const parsedDataDate = hour.start.split('T')[0];
 			
-			if  (parsedDataDate >= parsedStartDate && parsedDataDate <= parsedEndDate) {
+			if  (parsedDataDate >= startDate && parsedDataDate <= endDate) {
 				testData.push(hour);
 			}
 		});
