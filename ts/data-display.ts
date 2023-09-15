@@ -2,7 +2,7 @@ import * as c3 from 'c3';
 import {unpack} from 'msgpackr/unpack';
 
 interface HourData {
-	start: Date,
+	start: string,
 	kWh: number,
 	$: number,
 }
@@ -15,8 +15,21 @@ async function fetchData(month: string): Promise<HourData[]> {
 	return unpack(new Uint8Array(await resp.arrayBuffer()));
 }
 
-async function generateChart() {
-	const testData = await fetchData('2023-08');
+async function generateChart(startDate?: string, endDate?: string) {
+	const intervalData = await fetchData('2023-08');
+	const testData = [];
+
+	if (startDate && endDate) {
+		const parsedStartDate = new Date(startDate);
+		const parsedEndDate = new Date(endDate);
+		intervalData.forEach((hour) => {
+			const parsedDataDate = new Date(hour.start);
+			
+			if  (parsedDataDate >= parsedStartDate && parsedDataDate <= parsedEndDate) {
+				testData.push(hour);
+			}
+		});
+	}
 
 	c3.generate({
 		'bindto': '#power-chart',
@@ -34,7 +47,26 @@ async function generateChart() {
 				'type': 'timeseries',
 				'tick': {
 					'format': '%Y-%m-%d',
+					'count': 6,
 				},
+			},
+			'y': {
+				'label': {
+					'text': 'Power Usage (kWh)',
+					'position': 'outer-middle',
+				},	
+			},
+			'y2': {
+				'show': true,
+				'label': {
+					'text': 'Cost ($)',
+					'position': 'outer-middle',
+				},	
+			},
+		},
+		'grid': {
+			'y': {
+				'show': true,
 			},
 		},
 	});
