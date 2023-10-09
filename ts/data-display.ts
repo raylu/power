@@ -7,6 +7,11 @@ interface HourData {
 	$: number,
 }
 
+enum Aggregation {
+	Hourly,
+	Daily,
+}
+
 function *iterMonths(start: string, end: string): Generator<string> {
 	const date = new Date(start);
 	const endDate = new Date(end);
@@ -17,6 +22,10 @@ function *iterMonths(start: string, end: string): Generator<string> {
 		else
 			date.setFullYear(date.getFullYear() + 1, 0);
 	}
+}
+
+function days(start: string, end: string): number {
+	return (new Date(end).getTime() - new Date(start).getTime()) / 1000 / 60 / 60 / 24;
 }
 
 async function fetchData(month: string): Promise<HourData[]> {
@@ -32,27 +41,42 @@ async function fetchData(month: string): Promise<HourData[]> {
 }
 
 async function generateChart(startDate: string, endDate: string) {
+	const aggregation = days(startDate, endDate) <= 31 ? Aggregation.Hourly : Aggregation.Daily;
 	const intervalData: HourData[] = [];
 	for (const month of iterMonths(startDate, endDate)) {
 		const monthData = await fetchData(month);
 		if (!monthData)
 			continue;
-		monthData.forEach((hour) => {
-			const parsedDataDate = hour.start.split('T')[0];
-			if (parsedDataDate >= startDate && parsedDataDate <= endDate)
+		let interval: HourData = null;
+		for (const hour of monthData) {
+			const day = hour.start.split('T')[0];
+			if (day < startDate || day > endDate)
+				continue;
+			if (aggregation == Aggregation.Hourly)
 				intervalData.push(hour);
-		});
+			else if (interval === null)
+				interval = {'start': day, 'kWh': hour.kWh, '$': hour.$};
+			else if (interval.start == day) {
+				interval.kWh += hour.kWh;
+				interval.$ += hour.$;
+			} else {
+				intervalData.push(interval);
+				interval = {'start': day, 'kWh': hour.kWh, '$': hour.$};
+			}
+		}
+		if (aggregation == Aggregation.Daily)
+			intervalData.push(interval);
 	}
 
 	c3.generate({
 		'bindto': '#power-chart',
 		'data': {
 			'x': 'date',
-			'xFormat': '%Y-%m-%dT%H:%M:%S%Z',
+			'xFormat': aggregation == Aggregation.Hourly ? '%Y-%m-%dT%H:%M:%S%Z' : '%Y-%m-%d',
 			'columns': [
-				['date', ...intervalData.map(hour => hour.start)],
-				['Power Usage (kWh)', ...intervalData.map(hour => hour.kWh)],
-				['Cost ($)', ...intervalData.map(hour => hour.$)],
+				['date', ...intervalData.map(interval => interval.start)],
+				['Power Usage (kWh)', ...intervalData.map(interval => interval.kWh)],
+				['Cost ($)', ...intervalData.map(interval => interval.$)],
 			],
 		},
 		'axis': {
@@ -60,7 +84,7 @@ async function generateChart(startDate: string, endDate: string) {
 				'type': 'timeseries',
 				'tick': {
 					'outer': false,
-					'format': '%Y-%m-%d  %H:%M',
+					'format': aggregation == Aggregation.Hourly ? '%Y-%m-%d  %H:%M' : '%Y-%m-%d',
 					'rotate': -45,
 				},
 			},
