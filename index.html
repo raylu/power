@@ -10,7 +10,18 @@
 	<meta name="theme-color" content="#222">
 </head>
 <body>
-	<div id="content"></div>
+	<div id="content">
+		<header><h1>Power Data App</h1></header>
+	</div>
+	<div class="chart-container"><div id="power-chart-header"><h3>Power Usage (kWh) and Cost Over Time</h3></div>
+	<form id="power-chart-form" class="filter-form">
+		<label for="start">Start date: </label>
+		<input type="date" id="power-chart-form-start" name="power-chart-start">
+		<label for="end">End date: </label>
+		<input type="date" id="power-chart-form-end" name="power-chart-end">
+		<input type="submit" id="power-chart-form-submit" value="Update Chart">
+	</form>
+	<div id="power-chart"></div></div>
 	<script src="js/index.js" type="module"></script>
 </body>
 </html>
