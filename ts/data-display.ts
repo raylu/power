@@ -7,7 +7,7 @@ interface HourData {
 	$: number,
 }
 
-function getMonthRange(startDate: string, endDate?: string) {
+function getMonthRange(startDate: string, endDate?: string): string[] {
 	const months = [];
 	const date1 = new Date(startDate);
 	const date2 = new Date(endDate);

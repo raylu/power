@@ -5,9 +5,7 @@ const formattedEndDate = today.toLocaleDateString('sv');
 const startDate = new Date(new Date().setDate(new Date().getDate()-30));
 const formattedStartDate = startDate.toLocaleDateString('sv');
 
-const handleDateFilterSubmit = (event) => {
-    const formID = event.target.id;
-
+const handleDateFilterSubmit = (formID: string) => {
     const startDateValue = (<HTMLInputElement>document.getElementById(`${formID}-start`)).value;
     const endDateValue = (<HTMLInputElement>document.getElementById(`${formID}-end`)).value;
 
@@ -52,9 +50,8 @@ const displayFilter = (elementID: string, filterType: string) => {
 
     chartFilter.addEventListener('submit', (event) => {
         event.preventDefault();
-        if (filterType == 'date') {
-            handleDateFilterSubmit(event);
-        }
+        if (filterType == 'date')
+            handleDateFilterSubmit(chartFilter.id);
     });
     return chartFilter;
 };
