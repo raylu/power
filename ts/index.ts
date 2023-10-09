@@ -2,14 +2,15 @@ import generateChart from './data-display';
 
 const today = new Date();
 const formattedEndDate = today.toLocaleDateString('sv');
-const startDate = new Date(new Date().setDate(new Date().getDate()-30));
+const startDate = new Date();
+startDate.setDate(new Date().getDate()-30);
 const formattedStartDate = startDate.toLocaleDateString('sv');
 
 const handleDateFilterSubmit = (formID: string) => {
-	const startDateValue = (<HTMLInputElement>document.getElementById(`${formID}-start`)).value;
-	const endDateValue = (<HTMLInputElement>document.getElementById(`${formID}-end`)).value;
-
-	generateChart(startDateValue, endDateValue);
+	const startDate = (<HTMLInputElement>document.getElementById(`${formID}-start`)).value;
+	const endDate = (<HTMLInputElement>document.getElementById(`${formID}-end`)).value;
+	if (startDate && endDate)
+		generateChart(startDate, endDate);
 };
 
 const chartFilter = document.querySelector('#power-chart-form');

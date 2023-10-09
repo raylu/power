@@ -7,7 +7,7 @@ interface HourData {
 	$: number,
 }
 
-function getMonthRange(startDate: string, endDate?: string): string[] {
+function getMonthRange(startDate: string, endDate: string): string[] {
 	const months = [];
 	const date1 = new Date(startDate);
 	const date2 = new Date(endDate);
@@ -36,25 +36,17 @@ async function fetchData(month: string): Promise<HourData[]> {
 	}
 }
 
-async function generateChart(startDate?: string, endDate?: string) {
-	let intervalData = [];
+async function generateChart(startDate: string, endDate: string) {
+	const intervalData = [];
 	const monthRange = getMonthRange(startDate, endDate);
 	for (const month in monthRange) {
 		const monthData = await fetchData(monthRange[month]);
-		if (monthData) {
-			intervalData = intervalData.concat(monthData);
-		}
-	}
-
-	const testData = [];
-
-	if (startDate && endDate) {
-		intervalData.forEach((hour) => {
+		if (!monthData)
+			continue;
+		monthData.forEach((hour) => {
 			const parsedDataDate = hour.start.split('T')[0];
-
-			if  (parsedDataDate >= startDate && parsedDataDate <= endDate) {
-				testData.push(hour);
-			}
+			if  (parsedDataDate >= startDate && parsedDataDate <= endDate)
+				intervalData.push(hour);
 		});
 	}
 
@@ -64,9 +56,9 @@ async function generateChart(startDate?: string, endDate?: string) {
 			'x': 'date',
 			'xFormat': '%Y-%m-%dT%H:%M:%S%Z',
 			'columns': [
-				['date', ...testData.map(hour => hour.start)],
-				['Power Usage (kWh)', ...testData.map(hour => hour.kWh)],
-				['Cost ($)', ...testData.map(hour => hour.$)],
+				['date', ...intervalData.map(hour => hour.start)],
+				['Power Usage (kWh)', ...intervalData.map(hour => hour.kWh)],
+				['Cost ($)', ...intervalData.map(hour => hour.$)],
 			],
 		},
 		'axis': {
