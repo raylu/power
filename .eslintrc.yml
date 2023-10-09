@@ -18,6 +18,9 @@ rules:
   eol-last:
     - error
     - always
+  indent:
+    - error
+    - tab
   linebreak-style:
     - error
     - unix

@@ -42,7 +42,7 @@ async function generateChart(startDate?: string, endDate?: string) {
 	for (const month in monthRange) {
 		const monthData = await fetchData(monthRange[month]);
 		if (monthData) {
-			intervalData = intervalData.concat(monthData);	
+			intervalData = intervalData.concat(monthData);
 		}
 	}
 
@@ -51,7 +51,7 @@ async function generateChart(startDate?: string, endDate?: string) {
 	if (startDate && endDate) {
 		intervalData.forEach((hour) => {
 			const parsedDataDate = hour.start.split('T')[0];
-			
+
 			if  (parsedDataDate >= startDate && parsedDataDate <= endDate) {
 				testData.push(hour);
 			}
@@ -82,14 +82,14 @@ async function generateChart(startDate?: string, endDate?: string) {
 				'label': {
 					'text': 'Power Usage (kWh)',
 					'position': 'outer-middle',
-				},	
+				},
 			},
 			'y2': {
 				'show': true,
 				'label': {
 					'text': 'Cost ($)',
 					'position': 'outer-middle',
-				},	
+				},
 			},
 		},
 		'grid': {
