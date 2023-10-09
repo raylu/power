@@ -30,14 +30,10 @@ function days(start: string, end: string): number {
 
 async function fetchData(month: string): Promise<HourData[]> {
 	const url = `interval_data/${month}.msgpack`;
-	try {
-		const resp = await fetch(url);
-		if (!resp.ok)
-			throw new Error('failed to fetch ' + url);
-		return unpack(new Uint8Array(await resp.arrayBuffer()));
-	} catch(error) {
-		console.log(error);
-	}
+	const resp = await fetch(url);
+	if (!resp.ok)
+		throw new Error('failed to fetch ' + url);
+	return unpack(new Uint8Array(await resp.arrayBuffer()));
 }
 
 async function generateChart(startDate: string, endDate: string) {
