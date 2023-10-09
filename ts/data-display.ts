@@ -7,21 +7,16 @@ interface HourData {
 	$: number,
 }
 
-function getMonthRange(startDate: string, endDate: string): string[] {
-	const months = [];
-	const date1 = new Date(startDate);
-	const date2 = new Date(endDate);
-	const monthDiff = date2.getMonth() - date1.getMonth() + (date2.getFullYear() - date1.getFullYear()) * 12;
-	months.push(date1.toLocaleDateString('sv').slice(0,7));
-
-	if (monthDiff > 0) {
-		for (let i = 0; i < monthDiff; i++) {
-			date1.setMonth(date1.getMonth() + 1, 1);
-			months.push(date1.toLocaleDateString('sv').slice(0,7));
-		}
+function *iterMonths(start: string, end: string): Generator<string> {
+	const date = new Date(start);
+	const endDate = new Date(end);
+	while (date < endDate) {
+		yield date.toISOString().substring(0, 7);
+		if (date.getMonth() < 11)
+			date.setMonth(date.getMonth() + 1);
+		else
+			date.setFullYear(date.getFullYear() + 1, 0);
 	}
-
-	return months;
 }
 
 async function fetchData(month: string): Promise<HourData[]> {
@@ -37,15 +32,14 @@ async function fetchData(month: string): Promise<HourData[]> {
 }
 
 async function generateChart(startDate: string, endDate: string) {
-	const intervalData = [];
-	const monthRange = getMonthRange(startDate, endDate);
-	for (const month in monthRange) {
-		const monthData = await fetchData(monthRange[month]);
+	const intervalData: HourData[] = [];
+	for (const month of iterMonths(startDate, endDate)) {
+		const monthData = await fetchData(month);
 		if (!monthData)
 			continue;
 		monthData.forEach((hour) => {
 			const parsedDataDate = hour.start.split('T')[0];
-			if  (parsedDataDate >= startDate && parsedDataDate <= endDate)
+			if (parsedDataDate >= startDate && parsedDataDate <= endDate)
 				intervalData.push(hour);
 		});
 	}
