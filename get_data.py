@@ -4,6 +4,8 @@ import asyncio
 import calendar
 import datetime
 import pathlib
+import sys
+import typing
 
 import aiohttp
 import opower
@@ -12,7 +14,13 @@ import ormsgpack
 CURRENT_DIR = pathlib.Path(__file__).parent
 DATA_DIR = CURRENT_DIR / 'interval_data'
 
-async def main() -> None:
+def main() -> None:
+	if len(sys.argv) == 2 and sys.argv[1] == 'analyze':
+		analyze()
+	else:
+		asyncio.run(download())
+
+async def download() -> None:
 	DATA_DIR.mkdir(exist_ok=True)
 	try:
 		last_file = sorted(DATA_DIR.iterdir())[-1]
@@ -36,11 +44,11 @@ async def main() -> None:
 		tasks = []
 		while start < today:
 			print('will download', start.strftime('%Y-%m'))
-			tasks.append(download(client, account, start))
+			tasks.append(download_month(client, account, start))
 			start = (start + datetime.timedelta(days=31)).replace(day=1)
 		await asyncio.gather(*tasks)
 
-async def download(client: opower.Opower, account: opower.Account, start: datetime.date) -> None:
+async def download_month(client: opower.Opower, account: opower.Account, start: datetime.date) -> None:
 	end = start.replace(day=calendar.monthrange(start.year, start.month)[1])
 
 	reads = await client.async_get_cost_reads(account, opower.AggregateType.HOUR,
@@ -52,4 +60,16 @@ async def download(client: opower.Opower, account: opower.Account, start: dateti
 	print('writing', out_path)
 	out_path.write_bytes(ormsgpack.packb(data))
 
-asyncio.run(main())
+def analyze():
+	intervals = sorted(iter_intervals(), key=lambda interval: interval['kWh'])
+	p5 = len(intervals) // 20
+	print(len(intervals), 'data points; 5th percentile is', p5)
+	print(intervals[p5 + 1], 'kWh')
+
+def iter_intervals() -> typing.Iterator[dict]:
+	for path in DATA_DIR.iterdir():
+		for interval in ormsgpack.unpackb(path.read_bytes()):
+			yield interval
+
+if __name__ == '__main__':
+	main()
