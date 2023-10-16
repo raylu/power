@@ -1,6 +1,6 @@
 import generateChart from './data-display';
 
-interface HashParams { 
+interface HashParams {
 	start: string,
 	end: string,
 }
@@ -12,15 +12,15 @@ if (location.hash.length > 2) {
 	if (hash.substring(0,1) === '#') {
 		hash = hash.substring(1);
 	}
-	
+
 	const hashParams = {};
 	for (const param of hash.split('&')) {
 		const [key, value] = param.split('=', 2);
 		hashParams[key] = value;
 	}
-	
+
 	({'start': formattedStartDate, 'end': formattedEndDate} = hashParams as HashParams);
-} else {	
+} else {
 	const today = new Date();
 	formattedEndDate = today.toLocaleDateString('sv');
 	const startDate = new Date();

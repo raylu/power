@@ -24,6 +24,8 @@ rules:
   linebreak-style:
     - error
     - unix
+  no-trailing-spaces:
+    - error
   object-curly-spacing:
     - error
     - never
