@@ -1,16 +1,40 @@
 import generateChart from './data-display';
 
-const today = new Date();
-const formattedEndDate = today.toLocaleDateString('sv');
-const startDate = new Date();
-startDate.setDate(new Date().getDate()-30);
-const formattedStartDate = startDate.toLocaleDateString('sv');
+interface HashParams { 
+	start: string,
+	end: string,
+}
+
+let formattedStartDate, formattedEndDate;
+
+if (location.hash.length > 2) {
+	let hash = location.hash;
+	if (hash.substring(0,1) === '#') {
+		hash = hash.substring(1);
+	}
+	
+	const hashParams = {};
+	for (const param of hash.split('&')) {
+		const [key, value] = param.split('=', 2);
+		hashParams[key] = value;
+	}
+	
+	({'start': formattedStartDate, 'end': formattedEndDate} = hashParams as HashParams);
+} else {	
+	const today = new Date();
+	formattedEndDate = today.toLocaleDateString('sv');
+	const startDate = new Date();
+	startDate.setDate(new Date().getDate()-30);
+	formattedStartDate = startDate.toLocaleDateString('sv');
+}
 
 const handleDateFilterSubmit = (formID: string) => {
 	const startDate = (<HTMLInputElement>document.getElementById(`${formID}-start`)).value;
 	const endDate = (<HTMLInputElement>document.getElementById(`${formID}-end`)).value;
-	if (startDate && endDate)
+	if (startDate && endDate) {
 		generateChart(startDate, endDate);
+		history.pushState({}, '', location.pathname + `#start=${startDate}&end=${endDate}`);
+	}
 };
 
 const chartFilter = document.querySelector('#power-chart-form');
