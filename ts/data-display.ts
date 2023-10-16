@@ -14,8 +14,9 @@ enum Aggregation {
 
 function *iterMonths(start: string, end: string): Generator<string> {
 	const date = new Date(start);
+	date.setDate(1);
 	const endDate = new Date(end);
-	while (date < endDate) {
+	while (date <= endDate) {
 		yield date.toISOString().substring(0, 7);
 		if (date.getMonth() < 11)
 			date.setMonth(date.getMonth() + 1);
