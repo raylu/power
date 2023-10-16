@@ -36,12 +36,11 @@ async def main() -> None:
 		tasks = []
 		while start < today:
 			print('will download', start.strftime('%Y-%m'))
-			tasks.append(download(session, client, account, start))
+			tasks.append(download(client, account, start))
 			start = (start + datetime.timedelta(days=31)).replace(day=1)
 		await asyncio.gather(*tasks)
 
-async def download(session: aiohttp.ClientSession, client: opower.Opower, account: opower.Account,
-		start: datetime.date) -> None:
+async def download(client: opower.Opower, account: opower.Account, start: datetime.date) -> None:
 	end = start.replace(day=calendar.monthrange(start.year, start.month)[1])
 
 	reads = await client.async_get_cost_reads(account, opower.AggregateType.HOUR,
