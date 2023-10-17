@@ -100,9 +100,9 @@ function renderChart(aggregation: Aggregation, intervals: HourData[]) {
 		},
 		'regions': [
 			{
-				'axis': 'x', 
-				'start': '2023-09-01T00:00:00Z', 
-				'end': '2023-09-04T15:00:00Z', 
+				'axis': 'x',
+				'start': '2023-09-01T00:00:00Z',
+				'end': '2023-09-04T15:00:00Z',
 				'class': 'off-peak',
 			},
 		],
