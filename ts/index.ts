@@ -26,20 +26,23 @@ if (location.hash.length > 2) {
 	formattedStartDate = startDate.toLocaleDateString('sv');
 }
 
-const handleDateFilterSubmit = (formID: string) => {
-	const startDate = (document.getElementById(`${formID}-start`) as HTMLInputElement).value;
-	const endDate = (document.getElementById(`${formID}-end`) as HTMLInputElement).value;
+const chartFilter = document.querySelector('#power-chart-form');
+const startFilter = chartFilter.querySelector('input[name="power-chart-start"]') as HTMLInputElement;
+const endFilter = chartFilter.querySelector('input[name="power-chart-end"]') as HTMLInputElement;
+
+function handleDateFilterSubmit() {
+	const startDate = startFilter.value;
+	const endDate = endFilter.value;
 	if (startDate && endDate) {
 		generateChart(startDate, endDate);
 		history.pushState({}, '', location.pathname + `#start=${startDate}&end=${endDate}`);
 	}
-};
+}
 
-const chartFilter = document.querySelector('#power-chart-form');
-(chartFilter.querySelector('input[name="power-chart-start"]') as HTMLInputElement).value = formattedStartDate;
-(chartFilter.querySelector('input[name="power-chart-end"]') as HTMLInputElement).value = formattedEndDate;
+startFilter.value = formattedStartDate;
+endFilter.value = formattedEndDate;
 chartFilter.addEventListener('submit', (event) => {
 	event.preventDefault();
-	handleDateFilterSubmit(chartFilter.id);
+	handleDateFilterSubmit();
 });
 generateChart(formattedStartDate, formattedEndDate);
