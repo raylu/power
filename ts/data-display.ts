@@ -62,8 +62,7 @@ async function generateChart(startDate: string, endDate: string) {
 			'xFormat': aggregation == Aggregation.Hourly ? '%Y-%m-%dT%H:%M:%S%Z' : '%Y-%m-%d',
 			'columns': [
 				['date', ...intervals.map(interval => interval.start)],
-				['Power Usage (kWh)', ...intervals.map(interval => interval.kWh)],
-				['Cost ($)', ...intervals.map(interval => interval.$)],
+				['power usage (kWh)', ...intervals.map(interval => interval.kWh)],
 			],
 		},
 		'axis': {
@@ -77,14 +76,7 @@ async function generateChart(startDate: string, endDate: string) {
 			},
 			'y': {
 				'label': {
-					'text': 'Power Usage (kWh)',
-					'position': 'outer-middle',
-				},
-			},
-			'y2': {
-				'show': true,
-				'label': {
-					'text': 'Cost ($)',
+					'text': 'power usage (kWh)',
 					'position': 'outer-middle',
 				},
 			},
