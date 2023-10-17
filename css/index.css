@@ -58,3 +58,7 @@ table#power-table {
 	text-align: right;
 	font-family: monospace;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+	filter: invert(1);
+}
