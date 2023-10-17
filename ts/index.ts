@@ -1,4 +1,4 @@
-import generateChart from './data-display';
+import render from './data-display';
 
 interface HashParams {
 	start: string,
@@ -34,7 +34,7 @@ function handleDateFilterSubmit() {
 	const startDate = startFilter.value;
 	const endDate = endFilter.value;
 	if (startDate && endDate) {
-		generateChart(startDate, endDate);
+		render(startDate, endDate);
 		history.pushState({}, '', location.pathname + `#start=${startDate}&end=${endDate}`);
 	}
 }
@@ -45,4 +45,4 @@ chartFilter.addEventListener('submit', (event) => {
 	event.preventDefault();
 	handleDateFilterSubmit();
 });
-generateChart(formattedStartDate, formattedEndDate);
+render(formattedStartDate, formattedEndDate);

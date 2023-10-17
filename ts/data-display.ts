@@ -10,6 +10,7 @@ interface HourData {
 	start: string,
 	kWh: number,
 	$: number,
+	charging?: boolean,
 }
 
 enum Aggregation {
@@ -30,12 +31,13 @@ async function fetchData(): Promise<Data> {
 
 const dataPromise = fetchData();
 
-async function generateChart(startDate: string, endDate: string) {
+async function render(startDate: string, endDate: string) {
 	const aggregation = days(startDate, endDate) <= 31 ? Aggregation.Hourly : Aggregation.Daily;
 	const data = await dataPromise;
 
 	const intervals: HourData[] = [];
 	let interval: HourData = null;
+	let total = 0, charging = 0, num15Mins = 0;
 	for (const hour of data.intervalData) {
 		const day = hour.start.split('T')[0];
 		if (day < startDate || day > endDate)
@@ -51,10 +53,20 @@ async function generateChart(startDate: string, endDate: string) {
 			intervals.push(interval);
 			interval = {'start': day, 'kWh': hour.kWh, '$': hour.$};
 		}
+
+		total += hour.kWh;
+		if (hour.charging)
+			charging += hour.kWh - data.baseload;
+		num15Mins++;
 	}
 	if (aggregation == Aggregation.Daily)
 		intervals.push(interval);
 
+	renderChart(aggregation, intervals);
+	renderTable(total, data.baseload * num15Mins, charging);
+}
+
+function renderChart(aggregation: Aggregation, intervals: HourData[]) {
 	c3.generate({
 		'bindto': '#power-chart',
 		'data': {
@@ -89,4 +101,14 @@ async function generateChart(startDate: string, endDate: string) {
 	});
 }
 
-export default generateChart;
+const table = document.querySelector('table#power-table') as HTMLTableElement;
+function renderTable(total: number, baseload: number, charging: number) {
+	table.innerHTML = `
+		<tr><td>total</td><td>${total.toLocaleString()}</td><td>kWh</td></tr>
+		<tr><td>baseload</td><td>${baseload.toLocaleString()}</td><td>kWh</td></tr>
+		<tr><td>charging</td><td>${charging.toLocaleString()}</td><td>kWh</td></tr>
+		<tr><td>other</td><td>${(total - baseload - charging).toLocaleString()}</td><td>kWh</td></tr>
+	`;
+}
+
+export default render;
