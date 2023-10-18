@@ -13,10 +13,37 @@ interface HourData {
 	charging?: boolean,
 }
 
+interface Region {
+	category: string,
+	startHour: number,
+	endHour: number,
+}
+
 enum Aggregation {
 	Hourly,
 	Daily,
 }
+
+const powerCategories = [{
+	'category': 'off-peak',
+	'startHour': 0,
+	'endHour': 15,
+},
+{
+	'category': 'mid-peak',
+	'startHour': 15,
+	'endHour': 16,
+},
+{
+	'category': 'peak',
+	'startHour': 16,
+	'endHour': 21,
+},
+{
+	'category': 'mid-peak',
+	'startHour': 21,
+	'endHour': 0,
+}];
 
 function days(start: string, end: string): number {
 	return (new Date(end).getTime() - new Date(start).getTime()) / 1000 / 60 / 60 / 24;
@@ -62,11 +89,12 @@ async function render(startDate: string, endDate: string) {
 	if (aggregation == Aggregation.Daily)
 		intervals.push(interval);
 
-	renderChart(aggregation, intervals);
+	const regions = generateRegions(powerCategories, intervals);
+	renderChart(aggregation, intervals, regions);
 	renderTable(total, data.baseload * num15Mins, charging);
 }
 
-function renderChart(aggregation: Aggregation, intervals: HourData[]) {
+function renderChart(aggregation: Aggregation, intervals: HourData[], regions?: Array<object>) {
 	c3.generate({
 		'bindto': '#power-chart',
 		'data': {
@@ -98,15 +126,19 @@ function renderChart(aggregation: Aggregation, intervals: HourData[]) {
 				'show': true,
 			},
 		},
-		'regions': [
-			{
-				'axis': 'x',
-				'start': '2023-09-01T00:00:00Z',
-				'end': '2023-09-04T15:00:00Z',
-				'class': 'off-peak',
-			},
-		],
+		'regions': regions,
 	});
+}
+
+function generateRegions(regions: Region[], intervals: HourData[]) {
+	console.log(regions);
+	console.log(intervals);
+	return [{
+		'axis': 'x',
+		'start': '2023-09-01T00:00:00Z',
+		'end': '2023-09-04T15:00:00Z',
+		'class': 'off-peak',
+	}];
 }
 
 const table = document.querySelector('table#power-table') as HTMLTableElement;
