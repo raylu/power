@@ -98,7 +98,7 @@ function renderChart(aggregation: Aggregation, intervals: HourData[], regions?: 
 		'axis': {
 			'x': {
 				'type': 'timeseries',
-				'localtime': false,
+				'localtime': true,
 				'tick': {
 					'outer': false,
 					'format': aggregation == Aggregation.Hourly ? '%Y-%m-%d  %H:%M' : '%Y-%m-%d',
@@ -142,19 +142,17 @@ const powerCategories = [{
 	'endHour': 'T24:00:00Z',
 }];
 
-function generateRegions(regions: Region[], regionDays: Array<string>): Array<object> {
-	const regionoutput = [];
-
-	for (const day of regionDays) {
-		for (const region of regions) {
-			const newRegion = {'axis': 'x'};
-			newRegion['start'] = day + region.startHour;
-			newRegion['end'] = day + region.endHour;
-			newRegion['class'] = region.category;
-			regionoutput.push(newRegion);
-		}
-	}
-	return regionoutput;
+function generateRegions(powerCategories: Region[], regionDays: Array<string>): Array<object> {
+	const regions = [];
+	for (const day of regionDays)
+		for (const category of powerCategories)
+			regions.push({
+				'axis': 'x',
+				'start': day + category.startHour,
+				'end': day + category.endHour,
+				'class': category.category,
+			});
+	return regions;
 }
 
 const table = document.querySelector('table#power-table') as HTMLTableElement;
