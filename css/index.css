@@ -64,13 +64,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .c3-region.off-peak {
-	fill: #0f0;
+	fill: #90EE90;
+	fill-opacity: .5;
 }
 
 .c3-region.mid-peak {
-	fill: #fa0;
+	fill: #FFD580;
+	fill-opacity: .5;
 }
 
 .c3-region.peak {
 	fill: #f00;
+	fill-opacity: .5;
 }
