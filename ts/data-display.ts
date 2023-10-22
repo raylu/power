@@ -123,23 +123,23 @@ function renderChart(aggregation: Aggregation, intervals: HourData[], regions?: 
 
 const powerCategories = [{
 	'category': 'off-peak',
-	'startHour': 'T00:00:00Z',
-	'endHour': 'T15:00:00Z',
+	'startHour': 'T00:00:00-07:00',
+	'endHour': 'T15:00:00-07:00',
 },
 {
 	'category': 'mid-peak',
-	'startHour': 'T15:00:00Z',
-	'endHour': 'T16:00:00Z',
+	'startHour': 'T15:00:00-07:00',
+	'endHour': 'T16:00:00-07:00',
 },
 {
 	'category': 'peak',
-	'startHour': 'T16:00:00Z',
-	'endHour': 'T21:00:00Z',
+	'startHour': 'T16:00:00-07:00',
+	'endHour': 'T21:00:00-07:00',
 },
 {
 	'category': 'mid-peak',
-	'startHour': 'T21:00:00Z',
-	'endHour': 'T24:00:00Z',
+	'startHour': 'T21:00:00-07:00',
+	'endHour': 'T24:00:00-07:00',
 }];
 
 function generateRegions(powerCategories: Region[], regionDays: Array<string>): Array<object> {
